@@ -35,6 +35,10 @@ If you wish to contribute, please follow these [guidelines](https://www.contribu
 
 ## <a name="tests"></a>Tests
 
+
+https://github.com/user-attachments/assets/59559e68-9480-4362-85ce-470ab19b1fc6
+
+
 Here's the important part.  To run component tests from the commandline, use `npm run test:comp`.  To run e2e tests, first use `npm run start:dev` to start the server, then from a NEW COMMANDLINE run `npm run test:e2e`.  If you wish to use the cypress gui, run `npx cypress` from the root.
 
 ## <a name="questions"></a>Questions
