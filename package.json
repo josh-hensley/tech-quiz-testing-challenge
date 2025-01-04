@@ -15,7 +15,7 @@
     "seed": "cd server && npm run seed",
     "render-build": "npm install && npm run build",
     "cypress": "npx cypress open",
-    "e2e": "concurrently \"npm run cypress --browser electron --spec cypress/e2e/quiz.cy.js\" \"npm run start\"",
+    "e2e": "concurrently \"npm run cypress\" \"npm run start:dev\"",
     "test": "npx cypress run --browser electron --headless"
   },
   "keywords": [],
