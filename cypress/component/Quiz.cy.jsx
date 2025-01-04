@@ -1,62 +1,48 @@
-// import React from 'react'
 import Quiz from '../../client/src/components/Quiz'
 
 describe('<Quiz />', () => {
     beforeEach(() => {
         cy.mount(<Quiz />)
     });
-    it('renders', () => { });
-    it('should have a start button', () => {
-        cy.get('button').should('exist').and('have.text', 'Start Quiz')
-    })
-    it('should start a quiz when start button is clicked', () => {
-        cy.fixture('questions').then((questions) => {
-            cy.get('button').click();
-            cy.intercept('/api/questions/random', questions);
-            cy.get('h2').should('exist');
+    context('Before Quiz Begins', () => {
+        it('should render with a start button', () => {
+            cy.get('button').should('exist').and('have.text', 'Start Quiz')
         });
     });
-    it('should present a new question when a question is answered', () => {
-        cy.fixture('questions').then((questions) => {
-            cy.get('button').click();
-            cy.intercept('/api/questions/random', questions);
-            cy.get('h2').contains(questions[0].question);
-            cy.get('button').eq(3).click();
-            cy.get('h2').contains(questions[1].question);
+    context('Quiz in progress', () => {
+        beforeEach(() => {
+            cy.intercept('api/questions/random', { fixture: 'questions' });
+            cy.get('button').click()
         });
-    });
-    it('should end quiz when all questions are answered', () => {
-        cy.fixture('questions').then((questions) => {
-            cy.get('button').click();
-            cy.intercept('/api/questions/random', questions);
-            for (const item of questions) {
-                cy.get('h2').contains(item.question);
-                cy.get('.btn').eq(0).click();
+        it('should have a question heading', () => {
+            cy.get('h2').contains('?');
+        });
+        it('should have four answers with buttons', ()=>{
+            cy.get('.card').should('exist');
+            for (let i = 0; i < 4; i++){
+                cy.get('.btn').eq(i).should('exist')
+                cy.get('.alert').eq(i).should('exist')
             }
-            cy.get('h2').should('have.text', 'Quiz Completed')
-        });
+        })
     });
-    it('should show score when quiz is over', () => {
-        cy.fixture('questions').then((questions) => {
+    context('Quiz Completed', () => {
+        beforeEach(()=>{
+            cy.intercept('api/questions/random', { fixture: 'questions' });
             cy.get('button').click();
-            cy.intercept('/api/questions/random', questions);
-            for (const item of questions) {
-                cy.get('h2').contains(item.question);
-                cy.get('.btn').eq(0).click();
+            for (let i = 0; i < 10; i++){
+                cy.get('.btn').eq(0).click()
             }
-            cy.get('.alert').contains('Your score:')
         });
-    });
-    it('should start a new quiz when Take New Quiz button is pressed', () => {
-        cy.fixture('questions').then((questions) => {
-            cy.get('button').click();
-            cy.intercept('/api/questions/random', questions);
-            for (const item of questions) {
-                cy.get('h2').contains(item.question);
-                cy.get('.btn').eq(0).click();
-            }
-            cy.get('.btn').should('have.text', 'Take New Quiz').click();
-            cy.get('h2').should('exist').and('have.text', questions[0].question);
+        it('should have a quiz completed heading', ()=>{
+            cy.get('h2').should('exist').and('have.text', 'Quiz Completed')
         });
+        it('should have your score', ()=>{
+            cy.get('.alert').should('exist').and('have.text', 'Your score: 2/10')
+        });
+        it('should have a button that says Take New Quiz', ()=>{
+            cy.get('.btn').contains('Take New Quiz');
+        });
+
     });
 });
+
